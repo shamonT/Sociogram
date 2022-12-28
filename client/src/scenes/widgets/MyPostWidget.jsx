@@ -32,8 +32,9 @@ const MyPostWidget = ({ picturePath }) => {
   const [image, setImage] = useState(null);
   const [post, setPost] = useState("");
   const { palette } = useTheme();
-  const { _id } = useSelector((state) => state.user);
-  const token = useSelector((state) => state.token);
+  const { _id } = useSelector((state) => state.auth.user);
+  const {token} = useSelector((state) => state.auth);
+  
   const isNonMobileScreens = useMediaQuery("(min-width: 1000px)");
   const mediumMain = palette.neutral.mediumMain;
   const medium = palette.neutral.medium;
@@ -46,13 +47,16 @@ const MyPostWidget = ({ picturePath }) => {
       formData.append("picture", image);
       formData.append("picturePath", image.name);
     }
-
+console.log(token,"bbbbbb");
     const response = await fetch(`http://localhost:3001/posts`, {
+      
       method: "POST",
       headers: { Authorization: `Bearer ${token}` },
       body: formData,
     });
+    console.log(response,'kkljfwa');
     const posts = await response.json();
+    console.log(posts,'posts');
     dispatch(setPosts({ posts }));
     setImage(null);
     setPost("");
@@ -82,7 +86,7 @@ const MyPostWidget = ({ picturePath }) => {
           p="1rem"
         >
           <Dropzone
-            acceptedFiles=".jpg,.jpeg,.png"
+            acceptedFiles=".jpg,.jpeg,.png,.gif,.mp4"
             multiple={false}
             onDrop={(acceptedFiles) => setImage(acceptedFiles[0])}
           >

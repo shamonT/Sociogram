@@ -11,10 +11,11 @@ import UserWidget from "scenes/widgets/UserWidget";
 const ProfilePage = () => {
   const [user, setUser] = useState(null);
   const { userId } = useParams();
-  const token = useSelector((state) => state.token);
+  const token = useSelector((state) => state.auth.token);
   const isNonMobileScreens = useMediaQuery("(min-width:1000px)");
 
   const getUser = async () => {
+  
     const response = await fetch(`http://localhost:3001/users/${userId}`, {
       method: "GET",
       headers: { Authorization: `Bearer ${token}` },
@@ -24,6 +25,7 @@ const ProfilePage = () => {
   };
 
   useEffect(() => {
+    console.log(userId,'jhjhj');
     getUser();
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 

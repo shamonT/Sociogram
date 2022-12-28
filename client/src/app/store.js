@@ -1,8 +1,13 @@
-import { configureStore } from "@reduxjs/toolkit";
-import authReducer from "state/auth/adminIndex";
-export const store= configureStore({
-    reducer:{
-        auth:authReducer,
-        
-    },
-})
+// import {  configureStore } from "@reduxjs/toolkit";
+
+// import adminReducer from 'state/auth/adminIndex'
+
+// // const rootReducer = combineReducers({
+// //     adminAuth:,
+// // })
+
+// const store = configureStore({
+//     reducer: adminReducer
+// })
+
+// export default store

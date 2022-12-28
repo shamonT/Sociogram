@@ -2,8 +2,9 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 import "./index.css";
 import App from "./App.js";
-import authReducer from "./state";
-import { configureStore } from "@reduxjs/toolkit";
+import authReducer, { authSlice } from "./state/index";
+import adminAuthReducer, { adminAuthSlice } from './state/auth/adminIndex'
+import { combineReducers, configureStore } from "@reduxjs/toolkit";
 import { Provider } from "react-redux";
 import {
   persistStore,
@@ -17,12 +18,19 @@ import {
 } from "redux-persist";
 import storage from "redux-persist/lib/storage";
 import { PersistGate } from "redux-persist/integration/react";
-
+ 
 const persistConfig = { key: "root", storage, version: 1 };
 const persistedReducer = persistReducer(persistConfig, authReducer);
+const persistedAdminReducer = persistReducer(persistConfig,adminAuthReducer);
+
+const rootReducer = combineReducers({
+  auth : persistedReducer,
+  adminAuth : persistedAdminReducer
+})
 
 const store = configureStore({
-  reducer: persistedReducer,
+  reducer: rootReducer,
+
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
       serializableCheck: {

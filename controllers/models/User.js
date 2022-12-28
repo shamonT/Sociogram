@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+import mongoose, { Mongoose } from "mongoose";
 const UserSchema = new mongoose.Schema(
   {
     firstName: {
@@ -30,14 +30,20 @@ const UserSchema = new mongoose.Schema(
       default: "",
     },
     friends: {
-      type: Array,
+      type: [mongoose.Schema.Types.ObjectId],
+      ref:'User',
       default: [],
+    },
+    Active: {
+      type: Boolean,
+      default: true
     },
     location: String,
     occupation: String,
     viewedProfile: Number,
     impressions: Number,
   },
+  
   { timestamps: true }
 );
 const User = mongoose.model("User", UserSchema);

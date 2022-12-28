@@ -12,16 +12,17 @@ import { useSelector } from "react-redux";
 import { CssBaseline, ThemeProvider } from "@mui/material";
 import { createTheme } from "@mui/material/styles";
 import { themeSettings } from "theme";
-import Dashboard from "scenes/adminPage/Dashboard";
-import Login from "scenes/adminPage/Login";
-import Register from "scenes/adminPage/Register";
+import Dashboard from "scenes/adminPage/Homepage";
+
+import Admin from "scenes/adminPage/Admin";
+import Userlists from "scenes/adminPage/Userlist";
 //import { StarRateRounded } from "@mui/icons-material";
 
 function App() {
   const mode = useSelector((state) => state.mode);
 
   const theme = useMemo(() => createTheme(themeSettings(mode)), [mode]);
-  const isAuth = Boolean(useSelector((state) => state.token));
+  const isAuth = Boolean(useSelector((state) => state.auth.token));
   return (
     <div className="App">
       
@@ -39,9 +40,10 @@ function App() {
               path="/profile/:userId"
               element={isAuth ? <ProfilePage /> : <Navigate to="/" />}
             />
-               <Route path='/admin' element={<Dashboard/>}/>
-               <Route path='/register' element={<Register/>}/>
-               <Route path='/adminlogin' element={<Login/>}/>
+               <Route path='/admin/dashboard' element={<Dashboard/>}/>
+               {/* <Route path='/register' element={<Register/>}/> */}
+               <Route path='/admin' element={<Admin/>}/>
+               <Route path='/admin/user-list' element={<Userlists/>}/>              
           </Routes>
         </ThemeProvider>
       </BrowserRouter>

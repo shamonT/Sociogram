@@ -3,20 +3,13 @@ import authService from './authService'
 
 // Get user from localStorage
 const admin = JSON.parse(localStorage.getItem('admin'))
-const initialState = {
-  admin: admin ? admin : null,
-  isError: false,
-  isSuccess: false,
-  isLoading: false,
-  message: '',
-}
 
 // Register user
 export const register = createAsyncThunk(
   'auth/register',
-  async (user, thunkAPI) => {
+  async (admin, thunkAPI) => {
     try {
-      return await authService.register(user)
+      return await authService.register(admin)
     } catch (error) {
       const message =
         (error.response &&
@@ -24,7 +17,7 @@ export const register = createAsyncThunk(
           error.response.data.message) ||
         error.message ||
         error.toString()
-      return thunkAPI.rejectWithValue(message)
+      return thunkAPI.rejectWithValue(message,'hehehe')
     }
   }
 )
@@ -32,23 +25,31 @@ export const register = createAsyncThunk(
 // Login user
 export const login = createAsyncThunk('auth/login', async (admin, thunkAPI) => {
   try {
+    console.log('hllo this is login function at store')
     return await authService.login(admin)
   } catch (error) {
     const message =
       (error.response && error.response.data && error.response.data.message) ||
       error.message ||
       error.toString()
-    return thunkAPI.rejectWithValue(message)
+    return thunkAPI.rejectWithValue(message,'hiiiii')
   }
 })
 
 export const logout = createAsyncThunk('auth/logout', async () => {
   await authService.logout()
+  
 })
 
-export const authSlice = createSlice({
-  name: 'auth',
-  initialState,
+export const adminAuthSlice = createSlice({
+  name: 'adminAuth',
+  initialState:{
+    admin: admin ? admin : null,
+    isError: false,
+    isSuccess: false,
+    isLoading: false,
+    message: '',
+  },
   reducers: {
     reset: (state) => {
       state.isLoading = false
@@ -66,7 +67,6 @@ export const authSlice = createSlice({
         console.log(action.payload,'fullfilled')
         state.isLoading = false
         state.isSuccess = true
-        state.user = null
         state.admin = action.payload
       })
       .addCase(register.rejected, (state, action) => {
@@ -75,17 +75,15 @@ export const authSlice = createSlice({
         state.isError = true
         state.message = action.payload
         state.admin = null
-        state.user = null
       })
       .addCase(login.pending, (state) => {
-        console.log('pendinfggggg');
+        console.log('pendinggggg');
         state.isLoading = true
       })
       .addCase(login.fulfilled, (state, action) => {
         console.log('login success');
         state.isLoading = false
         state.isSuccess = true
-        state.user = null
         state.admin = action.payload
       })
       .addCase(login.rejected, (state, action) => {
@@ -94,16 +92,15 @@ export const authSlice = createSlice({
         state.isLoading = false
         state.isError = true
         state.message = action.payload
-        state.user = null
         state.admin = null
+        localStorage.clear()
       })
       .addCase(logout.fulfilled, (state) => {
         console.log('logout success');
-
         state.admin = null
       })
   },
 })
 
-export const { reset } = authSlice.actions
-export default authSlice.reducer
+export const { reset } = adminAuthSlice.actions
+export default adminAuthSlice.reducer

@@ -19,8 +19,9 @@ function Login() {
   const dispatch = useDispatch()
 
   const { admin, isLoading, isError, isSuccess, message } = useSelector(
-    (state) => state.auth||{}
+    (state) => state.adminAuth||{}
   )
+  console.log({ admin, isLoading, isError, isSuccess, message })
 
   useEffect(() => {
     if (isError) {
@@ -28,8 +29,7 @@ function Login() {
     }
 
     if (isSuccess || admin) {
-      
-      navigate('/admin')
+      navigate('/admin/dashboard')
     }
 
     dispatch(reset())
@@ -42,15 +42,16 @@ function Login() {
     }))
   }
 
-  const onSubmit = (e) => {
+  const onSubmit = async(e) => {
     e.preventDefault()
 
-    const userData = {
+    const adminData = {
       email,
       password,
     }
 
-    dispatch(login(userData))
+    const response = await dispatch(login(adminData))
+    console.log(response,'response at admin component')
   }
 
   if (isLoading) {

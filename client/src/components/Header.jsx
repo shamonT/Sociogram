@@ -1,22 +1,37 @@
-import React from 'react'
-import {FaSignInAlt,FaSignOutAlt,FaUser} from'react-icons/fa'
-import { Link ,useNavigate} from 'react-router-dom'
-import { useSelector,useDispatch } from 'react-redux'
-import { logout } from 'state/auth/adminIndex'
+import { FaSignInAlt, FaSignOutAlt } from 'react-icons/fa'
+import { Link, useNavigate } from 'react-router-dom'
+import { useSelector, useDispatch } from 'react-redux'
+import { logout,reset } from 'state/auth/adminIndex'
+import {  BsBellFill, BsSearch } from 'react-icons/bs'
 function Header() {
-  const navigate=useNavigate()
-  const dispatch=useDispatch()
-  const {admin}=useSelector((state)=>state.auth)||{}
-  const onLogout=()=>{
+  const navigate = useNavigate()
+  const dispatch = useDispatch()
+  const { admin } = useSelector((state) => state.adminAuth)
+
+  const onLogout = () => {
     dispatch(logout())
-    navigate('/')
+    dispatch(reset())
+    console.log('header first console');
+    navigate('/admin')
+    console.log('header second console');
   }
+
   return (
-    <div className='header'>
-      <div className='logo'>
-        <Link to="/admin">sociogram admin</Link>
-      </div>
-      <ul>
+    
+    <div className='admin-navmain'>
+    <div className='admin-logo'>
+        <h2 className='admin-navlogo text-center '>SOCIOGRAM ADMIN PANEL</h2>
+    </div>
+    <div className='admin-icons'>
+        <div className='admin-nav-search'>
+            <BsSearch />
+        </div>
+        <div className='admin-nav-notification'>
+            <BsBellFill />
+        </div>
+        <div className='admin-nav-profile'>
+
+        <ul>
         {admin ? (
           <li>
             <button className='btn' onClick={onLogout}>
@@ -26,19 +41,21 @@ function Header() {
         ) : (
           <>
             <li>
-              <Link to='/adminlogin'>
+              <Link to='/admin'>
                 <FaSignInAlt /> Login
               </Link>
             </li>
-            <li>
+            {/* <li>
               <Link to='/register'>
                 <FaUser /> Register
               </Link>
-            </li>
+            </li> */}
           </>
         )}
       </ul>
+        </div>
     </div>
+</div>
   )
 }
 

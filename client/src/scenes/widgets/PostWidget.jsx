@@ -4,7 +4,8 @@ import {
   FavoriteOutlined,
   ShareOutlined,
 } from "@mui/icons-material";
-import { Box, Divider, IconButton, Typography, useTheme } from "@mui/material";
+import { Box, Button, Divider, IconButton, TextField, Typography, useTheme } from "@mui/material";
+import axios from "axios";
 import FlexBetween from "components/FlexBetween";
 import Friend from "components/Friend";
 import WidgetWrapper from "components/WidgetWrapper";
@@ -24,16 +25,18 @@ const PostWidget = ({
   comments,
 }) => {
   const [isComments, setIsComments] = useState(false);
+ 
+  const [comment, setComment] = useState('')
   const dispatch = useDispatch();
-  const token = useSelector((state) => state.token);
-  const loggedInUserId = useSelector((state) => state.user._id);
+  const token = useSelector((state) => state.auth.token);
+  const loggedInUserId = useSelector((state) => state?.auth?.user?._id);
   const isLiked = Boolean(likes[loggedInUserId]);
   const likeCount = Object.keys(likes).length;
 
   const { palette } = useTheme();
   const main = palette.neutral.main;
   const primary = palette.primary.main;
-
+   let newComment = comments
   const patchLike = async () => {
     const response = await fetch(`http://localhost:3001/posts/${postId}/like`, {
       method: "PATCH",
@@ -45,6 +48,32 @@ const PostWidget = ({
     });
     const updatedPost = await response.json();
     dispatch(setPost({ post: updatedPost }));
+  };
+  // const handleComment=(postId,name,comment)=>{
+  //   axios.post('http://localhost:3001/posts/comment-post',{postId,name,comment})
+  //   const commentDetails={
+  //     postId,name,comment
+  //   }
+  //   console.log(commentDetails,'commentDetailscommentDetails');
+  //   newComment=newComment.push(commentDetails)
+  // }
+  const patchComment = async () => {
+    
+    const response = await fetch(
+      `http://localhost:3001/posts/${postId}/comment-post`,
+      {
+        method: "PATCH",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      
+        body: JSON.stringify({description : comment}),
+      }
+    );
+    const updatedComment = await response.json();
+    console.log(updatedComment,'new Comment');
+    dispatch(setPost({ post: updatedComment }));
   };
 
   return (
@@ -85,6 +114,22 @@ const PostWidget = ({
               <ChatBubbleOutlineOutlined />
             </IconButton>
             <Typography>{comments.length}</Typography>
+            
+           
+            {isComments && (
+              <FlexBetween gap="1.5rem">
+                <TextField
+                  id="outlined-name"
+                  label="Comment"
+                  onChange={(e) => setComment(e.target.value)}
+                  InputProps={{
+                    endAdornment: <Button variant="outlined" onClick={patchComment}>Post</Button>,
+                  }}
+                />
+                {/* value={name}
+                  onChange={handleChange} */}
+              </FlexBetween>
+            )}
           </FlexBetween>
         </FlexBetween>
 
@@ -94,7 +139,7 @@ const PostWidget = ({
       </FlexBetween>
       {isComments && (
         <Box mt="0.5rem">
-          {comments.map((comment, i) => (
+          {comments?.map((comment, i) => (
             <Box key={`${name}-${i}`}>
               <Divider />
               <Typography sx={{ color: main, m: "0.5rem 0", pl: "1rem" }}>

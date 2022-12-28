@@ -6,6 +6,7 @@ import User from "../models/User.js";
 export const createPost = async (req, res) => {
   try {
     const { userId, description, picturePath } = req.body;
+    console.log(userId,"bvgggfd");
     const user = await User.findById(userId);
     const newPost = new Post({
       userId,
@@ -70,3 +71,42 @@ export const likePost = async (req, res) => {
     res.status(404).json({ message: err.message });
   }
 };
+// export const  commentPost= async(req,res)=>{
+//   try {
+//     console.log(req.body,'postsposts');
+//     const postId=req.body.postId
+//     console.log(postId,'postId');
+//     const comments={
+//        username:req.body.firstName,
+//        comment: req.body.comment
+       
+//     }
+//     await Post.updateOne({_id:postId},{
+//       $push:{
+//         comments
+//       }
+//     })
+//     console.log(comments);
+//   } catch (error) {
+    
+//   }
+// }
+export const commentPost = async (req, res) => {
+  try {
+      const { id } = req.params;
+      const { description } = req.body;
+      const post = await Post.findById(id);
+
+      let commentUpdated = await post.updateOne({ $push: { comments: description } })
+
+      const newCommentPost = await Post.findById(id);
+
+      res.status(200).json(newCommentPost);
+
+  } catch (err) {
+      res.status(409).json({ message: err.message});
+  }
+
+
+
+}
