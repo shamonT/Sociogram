@@ -7,16 +7,40 @@ const PostsWidget = ({ userId, isProfile = false }) => {
   const dispatch = useDispatch();
   const posts = useSelector((state) => state.auth.posts);
   const token = useSelector((state) => state.auth.token);
-  
+  // const [posts, setPosts] = useState([]);
+	// const [skip, setSkip] = useState(0);
+	// const [isEnd, setIsEnd] = useState(false);
 
   const getPosts = async () => {
+    
     const response = await fetch("http://localhost:3001/posts", {
       method: "GET",
       headers: { Authorization: `Bearer ${token}` },
     });
     const data = await response.json();
     dispatch(setPosts({ posts: data }));
+    
   };
+  // useEffect(()=>{
+  //   fetchPosts()
+  // },[])
+  // const fetchPosts=async()=>{
+  //    try {
+  //     const{data,error}=await getPosts(skip);
+  //     if(error){
+  //       console.log(error);  
+  //     return    }
+  //    } catch (error) {
+      
+  //    }
+  // }
+  // const handleScroll = (e) => {
+	// 	const { offsetHeight, scrollTop, scrollHeight } = e.target;
+
+	// 	if (offsetHeight + scrollTop >= scrollHeight) {
+	// 		setSkip(posts?.length);
+	// 	}
+	// };
 
   const getUserPosts = async () => {
     const response = await fetch(
@@ -39,7 +63,9 @@ const PostsWidget = ({ userId, isProfile = false }) => {
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
+    
     <>
+    
     {posts[0]?
     <>
      {posts.map(
@@ -72,8 +98,9 @@ const PostsWidget = ({ userId, isProfile = false }) => {
     </>
     : 'null'
     }
-     
+    
     </>
+   
   );
 };
 

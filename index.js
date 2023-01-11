@@ -15,7 +15,8 @@ import postRoutes from "./routes/posts.js";
 import { register } from "./controllers/controller/auth.js";
 import { createPost } from "./controllers/controller/posts.js";
 import { verifyToken } from "./controllers/middleware/auth.js";
-
+import ChatRoute from "./routes/ChatRoute.js"
+import MessageRoute from "./routes/MessageRoute.js"
 //dummy
 
 // import User from "./controllers/models/User.js";
@@ -61,7 +62,9 @@ app.use("/auth", authRoutes);
 app.use("/users", userRoutes);
 
 app.use("/posts", postRoutes);
-app.use("/admin",adminRoutes)
+app.use("/admin",adminRoutes);
+app.use("/chat",ChatRoute)
+app.use("/message",MessageRoute)
 
 // app.use("/admin",adminRoutes);
 //mongooose

@@ -27,6 +27,9 @@ import { useDispatch, useSelector } from "react-redux";
 import { setMode, setLogout } from "state";
 import { useNavigate } from "react-router-dom";
 import FlexBetween from "components/FlexBetween";
+import axios from "axios";
+import "./modal.css";
+import Friend from "components/Friend";
 
 const Navbar = () => {
   const [isMobileMenuToggled, setIsMobileMenuToggled] = useState(false);
@@ -41,11 +44,31 @@ const Navbar = () => {
   const background = theme.palette.background.default;
   const primaryLight = theme.palette.primary.light;
   const alt = theme.palette.background.alt;
-
+  const [show, setShow] = useState(false);
+  const [search, setSearch] = useState("");
+  const [searchResult, setSearchResult] = useState([]);
   const fullName = `${user.firstName} ${user.lastName}`;
 
+  const handleShadow = () => {
+    setShow(false);
+  };
+
+  const handleInput = (e) => {
+    setSearch(e.target.value);
+  };
+
+  const handleSearch = () => {
+    axios
+      .get("http://localhost:3001/users/search/user/" + search)
+      .then((result) => {
+        console.log(result, "results");
+        setSearchResult(result.data.result);
+        setShow(true);
+      });
+  };
+
   return (
-    <FlexBetween padding="1rem 6%" backgroundColor={alt} position='sticky'  >
+    <FlexBetween padding="1rem 6%" backgroundColor={alt} position="sticky">
       <FlexBetween gap="1.75rem">
         <Typography
           fontWeight="bold"
@@ -61,36 +84,64 @@ const Navbar = () => {
         >
           Sociogram
         </Typography>
-        {isNonMobileScreens && (
-          <FlexBetween
-            backgroundColor={neutralLight}
-            borderRadius="9px"
-            gap="3rem"
-            padding="0.1rem 1.5rem"
-          >
-            <InputBase placeholder="Search..." />
-            <IconButton>
-              <Search />
-            </IconButton>
-          </FlexBetween>
-        )}
+        <div className="searchDiv">
+          {isNonMobileScreens && (
+            <FlexBetween
+              backgroundColor={neutralLight}
+              borderRadius="9px"
+              gap="3rem"
+              padding="0.1rem 1.5rem"
+            >
+              <InputBase
+                onChange={handleInput}
+                type="text"
+                placeholder="Search..."
+              />
+              <IconButton onClick={handleSearch}>
+                <Search />
+              </IconButton>
+            </FlexBetween>
+          )}
+          {show && (
+            <div className="c-modal">
+              <div className="boader">
+                <div className="text">
+                  <h5>Search Result</h5> 
+                  <button onClick={()=> setShow(false) }>X</button>
+                </div>
+                <div className="content">
+                  {searchResult.map((friend)=>{
+                    console.log(friend,'hhhis ahsdf');
+                  return  <Friend  key={friend._id}
+                  friendId={friend._id}
+                  name={`${friend.firstName} ${friend.lastName}`}
+                  subtitle={friend.occupation}
+                  userPicturePath={friend.picturePath} />
+                  })}
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
       </FlexBetween>
 
       {/* DESKTOP NAV */}
       {isNonMobileScreens ? (
         <FlexBetween gap="2rem">
           <IconButton onClick={() => dispatch(setMode())}>
-           
             {theme.palette.mode === "dark" ? (
               <DarkMode sx={{ fontSize: "25px" }} />
             ) : (
               <LightMode sx={{ color: dark, fontSize: "25px" }} />
             )}
           </IconButton>
-          
-          <Message sx={{ fontSize: "25px" }} />
-          <Notifications sx={{ fontSize: "25px" }} />
-          <Help sx={{ fontSize: "25px" }} />
+
+          <Message
+            sx={{ fontSize: "25px", cursor: "pointer" }}
+            onClick={() => navigate("../chat")}
+          />
+          {/* <Notifications sx={{ fontSize: "25px" }} /> */}
+          {/* <Help sx={{ fontSize: "25px" }} /> */}
           <FormControl variant="standard" value={fullName}>
             <Select
               value={fullName}
@@ -163,9 +214,12 @@ const Navbar = () => {
                 <LightMode sx={{ color: dark, fontSize: "25px" }} />
               )}
             </IconButton>
-            <Message sx={{ fontSize: "25px" }} />
-            <Notifications sx={{ fontSize: "25px" }} />
-            <Help sx={{ fontSize: "25px" }} />
+            <Message
+              sx={{ fontSize: "25px", cursor: "pointer" }}
+              onClick={() => navigate("../chat")}
+            />
+            {/* <Notifications sx={{ fontSize: "25px" }} />
+            <Help sx={{ fontSize: "25px" }} /> */}
             <FormControl variant="standard" value={fullName}>
               <Select
                 value={fullName}

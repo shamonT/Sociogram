@@ -29,7 +29,12 @@ const postSchema = mongoose.Schema(
       type: Array,
       default: [],
     },
+    reports:{
+      type: Array,
+      default: [],
+    }
   },
+
   { timestamps: true }
 );
 

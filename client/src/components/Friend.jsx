@@ -1,5 +1,6 @@
 import { PersonAddOutlined, PersonRemoveOutlined } from "@mui/icons-material";
 import { Box, IconButton, Typography, useTheme } from "@mui/material";
+import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
@@ -11,12 +12,11 @@ const Friend = ({ friendId, name, subtitle, userPicturePath }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { _id } = useSelector((state) => state.auth.user);
-  console.log(_id,'_id_id_id');
+  console.log(_id, "_id_id_id");
   const token = useSelector((state) => state.auth.token);
-  let {friends} = useSelector((state) => state.auth.user)
-  console.log(friends,'friends');
-  
-  
+  let { friends } = useSelector((state) => state.auth.user);
+  console.log(friends, "friends");
+
   const { palette } = useTheme();
   const primaryLight = palette.primary.light;
   const primaryDark = palette.primary.dark;
@@ -24,22 +24,30 @@ const Friend = ({ friendId, name, subtitle, userPicturePath }) => {
   const medium = palette.neutral.medium;
 
   const isFriend = friends?.find((friend) => friend?._id === friendId);
-  console.log(isFriend,'sadasdasisfriend')
+  console.log(isFriend, "sadasdasisfriend");
+
   const patchFriend = async () => {
-    const response = await fetch(
-      `http://localhost:3001/users/${_id}/${friendId}`,
-      {
-        method: "PATCH",
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
-      }
+    console.log();
+    const response = await axios.patch(
+      `http://localhost:3001/users/${_id}/${friendId}`
     );
-    console.log(response,'asdasds')
-    const data = await response.json();
-    console.log(data,'response');
-    dispatch(setFriends({ friends: data }));
+    // const response = await fetch(
+    //   `http://localhost:3001/users/${_id}/${friendId}`,
+    //   {
+    //     method: "PATCH",
+    //     headers: {
+    //       Authorization: `Bearer ${token}`,
+    //       "Content-Type": "application/json",
+    //     },
+    //   }
+    // );
+    console.log("helooooooooooooooooooo");
+    console.log(response, "asdasds");
+
+    if (response.data) {
+      const data = response.data;
+      dispatch(setFriends({ friends: data }));
+    }
   };
 
   return (
@@ -70,16 +78,18 @@ const Friend = ({ friendId, name, subtitle, userPicturePath }) => {
           </Typography>
         </Box>
       </FlexBetween>
-      <IconButton
-        onClick={() => patchFriend()}
-        sx={{ backgroundColor: primaryLight, p: "0.6rem" }}
-      >
-        {isFriend ? (
-          <PersonRemoveOutlined sx={{ color: primaryDark }} />
-        ) : (
-          <PersonAddOutlined sx={{ color: primaryDark }} />
-        )}
-      </IconButton>
+      {_id !== friendId ? (
+        <IconButton
+          onClick={() => patchFriend()}
+          sx={{ backgroundColor: primaryLight, p: "0.6rem" }}
+        >
+          {isFriend ? (
+            <PersonRemoveOutlined sx={{ color: primaryDark }} />
+          ) : (
+            <PersonAddOutlined sx={{ color: primaryDark }} />
+          )}
+        </IconButton>
+      ) : ""}
     </FlexBetween>
   );
 };

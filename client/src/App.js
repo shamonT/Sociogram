@@ -16,6 +16,11 @@ import Dashboard from "scenes/adminPage/Homepage";
 
 import Admin from "scenes/adminPage/Admin";
 import Userlists from "scenes/adminPage/Userlist";
+import Chat from "scenes/Chat/Chat";
+
+import Report from "components/Report";
+
+import UserreporterList from "scenes/adminPage/Userreporterlist";
 //import { StarRateRounded } from "@mui/icons-material";
 
 function App() {
@@ -43,7 +48,14 @@ function App() {
                <Route path='/admin/dashboard' element={<Dashboard/>}/>
                {/* <Route path='/register' element={<Register/>}/> */}
                <Route path='/admin' element={<Admin/>}/>
-               <Route path='/admin/user-list' element={<Userlists/>}/>              
+               <Route path='/admin/user-list' element={<Userlists/>}/>   
+               <Route path='/admin/report-list' element={<UserreporterList/>}/>   
+               <Route
+              path="/chat"
+              element={isAuth ? <Chat/> : <Navigate to="/" />}
+             
+            />   
+            <Route path='/report-post' element={<Report/>}/>     
           </Routes>
         </ThemeProvider>
       </BrowserRouter>

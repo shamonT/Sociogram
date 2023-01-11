@@ -15,7 +15,7 @@ export const authSlice = createSlice({
   initialState,
   reducers: {
     setMode: (state) => {
-      state.auth.mode = state.auth.mode === "light" ? "dark" : "light";
+      state.mode = state.mode === "light" ? "dark" : "light";
     },
     setLogin: (state, action) => {
       state.user = action.payload.user;
@@ -37,10 +37,12 @@ export const authSlice = createSlice({
     },
     setPosts: (state, action) => {
       state.posts = action.payload.posts;
+      
     },
     setPost: (state, action) => {
       const updatedPosts = state.posts.map((post) => {
         if (post._id === action.payload.post._id) return action.payload.post;
+        console.log(action,'action')
         return post;
       });
       state.posts = updatedPosts;

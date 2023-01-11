@@ -3,6 +3,7 @@ import Jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
 import asyncHandler from "express-async-handler";
 import User from "../models/User.js";
+import post from "../models/Post.js";
 
 export const registerAdmin = asyncHandler(async (req, res) => {
   console.log("Register admin called");
@@ -114,5 +115,44 @@ export const unblockUser = async (req, res) => {
     res.status(201).json({ blockStatus: false });
   } catch (error) {
     res.status(404).json("error occured");
+  }
+};
+
+//  export const getAllReports = async (req, res) => {
+//   try {
+//     console.log('fgdgdfgdf');
+//       await post.find({},{reports:1}).then((result) => {
+//         console.log(result,'resultresult');
+//           res.status(201).json({ status: true, reports: result, message: 'get all reports' })
+//       })
+//   } catch (error) {
+
+//   }
+// }
+
+
+export const getAllReports = async (req, res) => {
+  try {
+    console.log('fgdgdfgdf');
+      await post.find({},{reports:1}).then((result) => {
+        console.log(result,'resultresult');
+          res.status(201).json({ status: true, reports: result, message: 'get all reports' })
+      })
+  } catch (error) {
+
+  }
+}
+
+
+export const removePost = async (req, res) => {
+  try {
+    console.log(req.body, "req.paramsreq.params");
+    const { postId } = req.body;
+    await post.deleteOne({ postId }).then((response) => {
+      console.log(response, "response");
+      res.status(200).json({ success: true, postId, message: "Post removed" });
+    });
+  } catch (error) {
+    res.status(500).json({ error: true, message: "Can't delete post" });
   }
 };

@@ -10,8 +10,9 @@ body,
 }
 * {
     margin: 0;
-    padding: 0;
+    padding: 0.1rem;
     box-sizing: border-box;
+    justify-content: space-between;
   }
   body {
     font-family: 'Poppins', sans-serif;
@@ -239,7 +240,7 @@ body,
 
 .adminhome-main{
   display: grid;
-  grid-template-columns: 17rem auto ;
+  grid-template-columns: 17rem 80% ;
   padding-left: 1rem;
   padding-right: 1rem;
   padding-top: 1rem;
@@ -247,7 +248,8 @@ body,
 }
 .adminUser-main{
   display: grid;
-  grid-template-columns: 17rem auto ;
+  
+  grid-template-columns: 17rem  80%;
   padding-left: 1rem;
   padding-right: 2rem;
   padding-top: 1rem;
@@ -289,3 +291,20 @@ body,
   padding: 5px;
   
 }
+
+/* report */
+
+
+.navbar{
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 9;
+}
+/* .userwidget{
+  position: sticky;
+  width: 20rem;
+ 
+ 
+} */

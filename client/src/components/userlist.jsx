@@ -55,9 +55,9 @@ console.log(response);
   console.log(user,'jhuhiuhiu');
   return (
 <React.Fragment>
-    <div className='userTable-main'>
+    <div className='userTable-main' >
         <div className="usersList">
-            <Table striped bordered hover>
+            <Table striped bordered hover style={{width:'100%'}}>
                 <thead>
                     <tr>
                         <th>#</th>
@@ -65,10 +65,10 @@ console.log(response);
                         <th>Email</th>
                         {/* <th>Phone</th> */}
                         <th>Status</th>
-                        <th>Action</th>
+                        <th style={{textAlign:'start'}}>Action</th>
                     </tr>
                 </thead>
-                <tbody>
+                <tbody style={{textAlign:'center'}}>
 
                    {user?.map((obj,index, id) => {
                     console.log(obj,'hdfj');
