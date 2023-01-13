@@ -21,6 +21,7 @@ import Chat from "scenes/Chat/Chat";
 import Report from "components/Report";
 
 import UserreporterList from "scenes/adminPage/Userreporterlist";
+import OtpFormm from "scenes/loginPage/OtpFormm";
 //import { StarRateRounded } from "@mui/icons-material";
 
 function App() {
@@ -36,6 +37,7 @@ function App() {
           <CssBaseline />
           <Routes>
             <Route path="/" element={<LoginPage />} />
+            <Route path="/otp-page" element={<OtpFormm />} />
             {/* <Route path="/home" element={<HomePage />} /> */}
             <Route
               path="/home"

@@ -1,15 +1,16 @@
 .Chat {
-    position: relative;
-    display: grid;
-    grid-template-columns: 22% auto;
+   
+    display: flex;
+   justify-content: flex-start;
     gap: 1rem;
-    margin:"60px 0 0 0"
+    
   }
   
   .Left-side-chat {
     display: flex;
     flex-direction: column;
     gap: 1rem;
+    margin-top: 4rem;
   }
   
   .Chat-container {
@@ -33,7 +34,9 @@
   .Right-side-chat {
     display: flex;
     flex-direction: column;
+  width: max-content;
     gap: 1rem;
+    margin-top: 3rem;
   }
   .conversation:hover {
     background: #80808038;

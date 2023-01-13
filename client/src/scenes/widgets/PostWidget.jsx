@@ -48,7 +48,7 @@ const PostWidget = ({
   const dispatch = useDispatch();
   const token = useSelector((state) => state.auth.token);
   const loggedInUserId = useSelector((state) => state?.auth?.user?._id);
-  const isLiked = Boolean(likes[loggedInUserId]);
+   const isLiked = Boolean(likes[loggedInUserId]);
   const likeCount = Object.keys(likes).length;
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);

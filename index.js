@@ -12,7 +12,7 @@ import authRoutes from "./routes/auth.js";
 import userRoutes from "./routes/users.js";
 import postRoutes from "./routes/posts.js";
  import adminRoutes from "./routes/adminRoutes.js"
-import { register } from "./controllers/controller/auth.js";
+import { register, sendOtp } from "./controllers/controller/auth.js";
 import { createPost } from "./controllers/controller/posts.js";
 import { verifyToken } from "./controllers/middleware/auth.js";
 import ChatRoute from "./routes/ChatRoute.js"
@@ -55,6 +55,9 @@ const upload = multer({ storage });
 
 //routes with files//
 app.post("/auth/register", upload.single("picture"), register);
+app.post("/send-otp", upload.single("picture"), sendOtp)
+
+
 app.post("/posts", verifyToken, upload.single("picture"), createPost);
 
 app.use("/auth", authRoutes);
