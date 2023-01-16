@@ -43,11 +43,7 @@ export const addRemoveFriend = async (req, res) => {
       if (user.friends.includes(friendId)) {
         console.log('firsttttttttttttttttttt');
         console.log(user.friends,'hahhaha')
-        user.friends = user.friends.filter((friendId) =>{
-          return(
-            console.log(friendId,'inside filter id')
-          )
-        }  )
+        user.friends = user.friends.filter((id) => id !== friendId)
         console.log(user.friends,'endi second')
           friend.friends = friend.friends.filter((id) => id !== id)
       } else {
@@ -142,4 +138,37 @@ console.log(req.body,'req.bodyreq.body');
   } catch (error) {
 
   }
+}
+// export const editprofilepic - async (req, res) ">(
+//   const id reg.params.id;
+//   1/ console.log("Data Received", req.body)
+//   const picturepath
+//   req.body;
+//   try (
+//   const user - await user. findByIdandupdate( id, req.body, (
+//   new: true,
+//   D:
+//   const token - jwt. sign(( id: user.id ), process.env. JMt _ SECRET
+//   console. log(f user ))
+//   res.status (260). json( [ user, token, success: true ));
+//   ) catch (error) (
+//   console. log(error, "Error
+//   res.status (400).jsonferror, 'hello');
+
+
+export const editprofilepic=async (req, res) => {
+  const id=req.params.id;
+  console.log(id,'ididid');
+  console.log(req.body,'ddddd');
+  const picturePath=req.body;
+  try {
+    const user=await User.findByIdAndUpdate(id,req.body,{
+      new: true,
+    })
+    const token=Jwt.sign({id:user.id},process.env.JWT_SECRET)
+    res.status(200).json({user,token,success:true})
+  } catch (error) {
+    res.status(400).json(error,'error')
+  }
+
 }

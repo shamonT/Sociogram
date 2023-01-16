@@ -30,10 +30,9 @@ const UserSchema = new mongoose.Schema(
       default: "",
     },
     friends: {
-      type: [mongoose.Schema.Types.ObjectId],
-      ref:'User',
-      default: [],
-    },
+      type: Array,
+      default: []
+  },
     Active: {
       type: Boolean,
       default: true

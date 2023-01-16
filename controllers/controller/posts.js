@@ -184,3 +184,30 @@ export const reportPost = async (req, res) => {
     }
   } catch (error) {}
 };
+
+ export const removeComment = async (req, res, next) => {
+  try {
+console.log(req.params,'req.params');
+      const { comId, postId } = req.params
+      await post.updateOne({ postId }, {
+          $pull: {
+              comments: {
+                  comId: comId
+              }
+          },
+
+          $inc: {
+              commentCount: -1
+          }
+
+      }).then((response) => {
+console.log(response);
+          res.status(201).json({ success: true, comId, message: 'remove success' })
+      }).catch((error) => {
+
+      })
+
+  } catch (error) {
+
+  }
+}

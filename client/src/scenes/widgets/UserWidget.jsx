@@ -3,9 +3,11 @@ import {
   EditOutlined,
   LocationOnOutlined,
   WorkOutlineOutlined,
+  DeleteOutlined,
 } from "@mui/icons-material";
+import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import CreateIcon from '@mui/icons-material/Create';
-import { Box, Typography, Divider, useTheme, ButtonBase, Modal } from "@mui/material";
+import { Box, Typography, Divider, useTheme, ButtonBase, Modal, IconButton, Alert, LinearProgress } from "@mui/material";
 import UserImage from "components/UserImage";
 import FlexBetween from "components/FlexBetween";
 import WidgetWrapper from "components/WidgetWrapper";
@@ -16,7 +18,8 @@ import axios from "axios";
 import { setLogin } from "state";
 import { Button, Form, Input, Upload } from "antd";
 import TextsmsIcon from '@mui/icons-material/Textsms';
-import { createUserChat } from "api/AuthRequest";
+import { createUserChat, editProflePic } from "api/AuthRequest";
+import Dropzone from "react-dropzone";
 const UserWidget = ({ userId, picturePath }) => {
   const [user, setUser] = useState(null);
   const { palette } = useTheme();
@@ -30,6 +33,11 @@ const UserWidget = ({ userId, picturePath }) => {
   const [open, setOpen] = useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
+  const [loader, setLoader] = useState(false)
+  const [isImage, setIsImage] = useState(false)
+
+  const [openPic, setOpenPic] = useState(false);
+  const [image, setImage] = useState(null);
   useEffect(() => {
     if (userId === currUserId._id) {
       console.log(currUserId);
@@ -53,6 +61,54 @@ const UserWidget = ({ userId, picturePath }) => {
     p: 4,
   };
   const dispatch = useDispatch();
+
+  const handleProfilePicture = async () => {
+   
+    const formData = new FormData();
+    console.log(formData,'formDataformData');
+    formData.append("userId", currUserId._id)
+    if (image) {
+      formData.append("picture", image);
+      formData.append("picturePath", image.name);
+
+    } else {
+      setIsImage(true)
+      setTimeout(() => {
+        setIsImage(false)
+      }, 3000);
+    }
+
+    //posting post
+    const response = await editProflePic(currUserId._id, formData)
+    console.log(response,'responseresponse');
+    setLoader(true)
+
+    if (response.data.success) {
+
+      setImage(null)
+
+      dispatch(
+        setLogin({
+          user: response.data.user,
+          token: response.data.token,
+        }),
+
+      );
+
+      setTimeout(() => {
+        setLoader(false)
+      }, 3000);
+
+
+    }
+
+
+  }
+
+
+
+
+  //edit profile
   const onFinish = async (values) => {
     try {
       console.log('working');
@@ -174,15 +230,25 @@ const UserWidget = ({ userId, picturePath }) => {
           <Typography color={medium}>{occupation}</Typography>
         </Box>
         {isCurrUser ?
-          <Box display="flex" alignItems="center" gap="1rem">
-          <CreateIcon fontSize="large" sx={{ color: main }} />
-          <ButtonBase onClick={handleOpen} > <Typography color={medium}>Edit Profile</Typography></ButtonBase>
-        </Box> : <Box display="flex" alignItems="center" gap="1rem">
-          <TextsmsIcon fontSize="large" sx={{ cursor: "pointer" }}
-            onClick={() => { createChat() }} >Message</TextsmsIcon>
+          (
+            <Box>
+              <Box display="flex" alignItems="center" gap="1rem" mb="0.5rem">
+                <CreateIcon fontSize="large" sx={{ color: main }} />
+                <ButtonBase onClick={handleOpen} > <Typography color={medium}>Edit Profile</Typography></ButtonBase>
+              </Box>
+              <Box display="flex" alignItems="center" gap="1rem" mb="0.5rem">
+                <AccountCircleIcon fontSize="large" sx={{ color: main }} />
+                <ButtonBase onClick={() => { setOpenPic(!openPic) }} > <Typography color={medium}>Edit Profile Picture</Typography></ButtonBase>
 
-          <Typography color={medium}>Message</Typography>
-        </Box>}
+              </Box>
+            </Box>
+          )
+          : <Box display="flex" alignItems="center" gap="1rem">
+            <TextsmsIcon fontSize="large" sx={{ cursor: "pointer" }}
+              onClick={() => { createChat() }} >Message</TextsmsIcon>
+
+            <Typography color={medium}>Message</Typography>
+          </Box>}
       </Box>
 
 
@@ -266,12 +332,7 @@ const UserWidget = ({ userId, picturePath }) => {
                 <Input placeholder={currUserId.location} defaultValue={currUserId.location} />
               </Form.Item>
 
-              <Form.Item label="picturePath" name="picturePath">
-                <Input type="file" placeholder={currUserId.location}  />
-             {/* <input type="file" name="picturePath"></input> */}
-       
-                
-              </Form.Item>
+              
 
               <Form.Item label="Occupation" name="occupation">
                 <Input placeholder={currUserId.occupation} defaultValue={currUserId.occupation}/>
@@ -294,6 +355,71 @@ const UserWidget = ({ userId, picturePath }) => {
           </Typography>
         </Box>
       </Modal>
+
+      {openPic ? (
+        <WidgetWrapper>
+          <Box
+            border={`1px solid ${medium}`}
+            borderRadius="5px"
+            mt="1rem"
+            p="1rem"
+            mb="0.5rem"
+          >
+            <Dropzone
+              acceptedFiles=".jpg,.jpeg,.png"
+              multiple={false}
+              onDrop={(acceptedFiles) => setImage(acceptedFiles[0])}
+            >
+              {({ getRootProps, getInputProps }) => (
+                <FlexBetween>
+                  <Box
+                    {...getRootProps()}
+                    border={`2px dashed ${palette.primary.main}`}
+                    p="1rem"
+                    width="100%"
+                    sx={{ "&:hover": { cursor: "pointer" } }}
+                  >
+                    <input {...getInputProps()} />
+                    {!image ? (
+                      <p>Add Image Here</p>
+                    ) : (
+                      <FlexBetween>
+                        <Typography>{image.name}</Typography>
+                        <EditOutlined />
+                      </FlexBetween>
+                    )}
+                  </Box>
+                  {image && (
+                    <IconButton
+                      onClick={() => setImage(null)}
+                      sx={{ width: "15%" }}
+                    >
+                      <DeleteOutlined />
+                    </IconButton>
+                  )}
+                </FlexBetween>
+              )}
+            </Dropzone>
+
+          </Box>
+          <Button
+            onClick={handleProfilePicture}
+            sx={{
+              color: palette.primary.main,
+              backgroundColor: palette.primary.main,
+              borderRadius: "3rem",
+            }}
+          >
+            Set Profile Picture
+          </Button>
+        </WidgetWrapper>
+      ) : ""}
+      {isImage ? (
+        <Alert severity="error">Please Select an Image</Alert>
+      ) : ""}
+      {loader ? (<LinearProgress />) : null}
+
+
     </WidgetWrapper>
   );
 };

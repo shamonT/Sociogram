@@ -6,6 +6,7 @@ import {
   addRemoveFriend,
   updateUser,
   searchUser,
+  editprofilepic,
   
   
   
@@ -25,5 +26,5 @@ router.put('/edit-user/:id', updateUser)
 
 router.get('/search/user/:search', searchUser)
 // router.get('/search',verifyToken,searchUser)
-
+router.post("/profilepic-user/:id", editprofilepic)
 export default router;

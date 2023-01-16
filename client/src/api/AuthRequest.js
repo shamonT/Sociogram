@@ -11,3 +11,5 @@ export const userLogin=(values,header)=>API.post("/auth/login",values,header)
 export const userRegister=(userDetails)=>API.post("/auth/register",userDetails)
 
 export const createUserChat = (data) => API.post('/chat/', data);
+
+export const editProflePic = (currUserId, values) => API.post(`/users/profilepic-user/${currUserId}`, values)

@@ -4,10 +4,9 @@ import {
   FavoriteOutlined,
   MoreVertOutlined,
 } from "@mui/icons-material";
-
+import DeleteIcon from '@mui/icons-material/Delete';
 import {
   Box,
-  
   Button,
   Divider,
   IconButton,
@@ -46,17 +45,17 @@ const PostWidget = ({
   const [isComments, setIsComments] = useState(false);
   const user = useSelector((state) => state.auth.user);
   const [comment, setComment] = useState("");
-  const [time, setTime] = useState('')
+  const [time, setTime] = useState("");
   const dispatch = useDispatch();
   const token = useSelector((state) => state.auth.token);
   const loggedInUserId = useSelector((state) => state?.auth?.user?._id);
-   const isLiked = Boolean(likes[loggedInUserId]);
+  const isLiked = Boolean(likes[loggedInUserId]);
   const likeCount = Object.keys(likes).length;
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
   const [show, setShow] = useState(false);
   const [remove, setRemove] = useState(false);
-  const [reportModal,setReportModal] = useState(false);
+  const [reportModal, setReportModal] = useState(false);
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
   };
@@ -88,8 +87,31 @@ const PostWidget = ({
     }
     // console.log(response,'responseresponse');
   };
-  useEffect(() => {}, []);
+  
+  const handleRemove = async (commentId) => {
+   
+    const response = await fetch(
+      `http://localhost:3001/posts/comment/${postId}/${commentId}`,
+      {
+        method: "delete",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      }
+    );
+    if (response) {
+      toast.success('comment removed')
 
+      setComment(
+          comments.filter((value) => value.commentId !== commentId)
+
+      )
+  }
+    // console.log(response,'responseresponse');
+  };
+  useEffect(() => {}, []);
+     
   const { palette } = useTheme();
   const main = palette.neutral.main;
   const primary = palette.primary.main;
@@ -117,7 +139,7 @@ const PostWidget = ({
 
   //handle click
   const handleReport = () => {
-    setReportModal(true)
+    setReportModal(true);
   };
 
   // const handleDelete = () => {
@@ -126,15 +148,15 @@ const PostWidget = ({
   const patchComment = async () => {
     const userName = user.firstName + " " + user.lastName;
     let response;
-    if(comment){
+    if (comment) {
       response = await axios.patch(`http://localhost:3001/posts/comment-post`, {
-      comment,
-      userName,
-      postId,
-      time:Date()
-    });
-    }else{
-      toast.error("No comment found.")
+        comment,
+        userName,
+        postId,
+        time: Date(),
+      });
+    } else {
+      toast.error("No comment found.");
     }
     if (response) {
       dispatch(setPost({ post: response.data.newCommentPost }));
@@ -227,7 +249,11 @@ const PostWidget = ({
           ) : (
             <>
               <MenuItem onClick={handleReport}>Report</MenuItem>
-              <Report reportModal={reportModal} postId={[postId]} setReportModal={setReportModal}/>
+              <Report
+                reportModal={reportModal}
+                postId={[postId]}
+                setReportModal={setReportModal}
+              />
             </>
           )}
           {/* <MenuItem onClick="">Report</MenuItem>
@@ -235,27 +261,30 @@ const PostWidget = ({
         </Menu>
       </FlexBetween>
       {isComments && (
-            <Box mt="0.5rem">
-              {comments?.map((comment, i) => (
-                <Box key={`${name}-${i}`}>
-                  <Divider />
-                  <Accordion collapse={true}>
-                  <Typography sx={{ color: main,m: "0.5rem 0", pl: "1rem" }}>
-                    {comment.username}:  {comment.comment}:
-                  <span>{format(comment.time)}</span>
-
-                  </Typography>
-                  <Typography sx={{ color: main, m: "0.5rem 0", pl: "1rem" }}>
-                  
-                  </Typography>
-                  </Accordion>
-                </Box>
-              ))}
+        <Box mt="0.5rem">
+          {comments?.map((comment, i) => (
+            <Box key={`${name}-${i}`}>
               <Divider />
+              <Accordion collapse={true}>
+                <Typography sx={{ color: main, m: "0.5rem 0", pl: "1rem" }}>
+                  {comment.username}: {comment.comment}:
+                  <span>{format(comment.time)}</span>{" "}
+                  <Button
+                  onClick={handleRemove}
+                  >
+               <DeleteIcon/>
+                  </Button>
+                </Typography>
+                <Typography
+                  sx={{ color: main, m: "0.5rem 0", pl: "1rem" }}
+                ></Typography>
+              </Accordion>
             </Box>
-          )}
-        </WidgetWrapper>
-      
+          ))}
+          <Divider />
+        </Box>
+      )}
+    </WidgetWrapper>
   );
 };
 
