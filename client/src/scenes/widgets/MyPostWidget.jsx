@@ -25,6 +25,7 @@ import WidgetWrapper from "components/WidgetWrapper";
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { setPosts } from "state";
+import { toast } from "react-toastify";
 
 const MyPostWidget = ({ picturePath }) => {
   const dispatch = useDispatch();
@@ -49,17 +50,25 @@ const MyPostWidget = ({ picturePath }) => {
     }
 console.log(token,"bbbbbb");
     const response = await fetch(`http://localhost:3001/posts`, {
-      
       method: "POST",
       headers: { Authorization: `Bearer ${token}` },
       body: formData,
     });
-    console.log(response,'kkljfwa');
-    const posts = await response.json();
-    console.log(posts,'posts');
-    dispatch(setPosts({ posts }));
-    setImage(null);
-    setPost("");
+    if(response.status === 200){
+      console.log(response,'kkljfwa');
+      const posts = await response.json();
+      if(posts.stack){
+        toast.error(posts.message)
+        return;
+      }
+      console.log(posts,'posts');
+      dispatch(setPosts({ posts }));
+      setImage(null);
+      setPost("");
+    }else{
+      console.log(response,'kkljfwa');
+      toast.error(response.data.message)
+    }
   };
 
   return (

@@ -1,4 +1,5 @@
 import bcrypt from "bcrypt";
+import AsyncHandler from "express-async-handler";
 import Jwt from "jsonwebtoken";
 
 import User from "../models/User.js";
@@ -7,14 +8,9 @@ import { otpSend } from "../Services/nodeMailer.js";
 
 export const sendOtp = async (req, res) => {
   try {
-      const { firstName,
-          lastName,
-          email,
-          password,
-          picturePath,
-          friends,
-          location,
-          occupation, } = req.body;
+      const { 
+          email
+         } = req.body;
 
 
       console.log(req.body, 'fisrt emailllll');
@@ -106,3 +102,34 @@ export const login = async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 };
+
+ export const resetPassword = AsyncHandler(async (req, res) => {
+  console.log("RESET PASSWORD CALL AT SERVER");
+  const userId = req.params.id;
+  const { password } = req.body;
+  console.log(userId, "............", password);
+  if (!userId || !password) {
+    res.status(400);
+    throw new Error("Please add all fields.");
+  }
+  const user = await User.findById(userId);
+  console.log(user, "userrrrrrr11");
+  if (!user) {
+    res.status(400);
+    throw new Error("User not found.");
+  }
+  const salt = await bcrypt.genSalt(10);
+  const hashedPassword = await bcrypt.hash(password, salt);
+  const updatedUser = await User.findByIdAndUpdate(userId, {
+    $set: { password: hashedPassword },
+  });
+  console.log("user password updated");
+  if (!updateUser) {
+    res.status(400);
+    throw new Error("Error updating user.");
+  }
+  res.status(200).json({
+    status: "success",
+    message: "Password changed successfully",
+  });
+});

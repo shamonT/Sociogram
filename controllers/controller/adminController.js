@@ -131,17 +131,28 @@ export const unblockUser = async (req, res) => {
 // }
 
 
-export const getAllReports = async (req, res) => {
+// export const getAllReports = async (req, res) => {
+//   try {
+//     console.log('fgdgdfgdf');
+//       await post.find({},{reports:1}).then((result) => {
+//         console.log(result,'resultresult');
+//           res.status(201).json({ status: true, reports: result, message: 'get all reports' })
+//       })
+//   } catch (error) {
+
+//   }
+// }
+export const getAllReports = async (req, res, next) => {
   try {
-    console.log('fgdgdfgdf');
-      await post.find({},{reports:1}).then((result) => {
-        console.log(result,'resultresult');
+      await post.find({ reportCount: { $not: { $eq: 0 } } }).then((result) => {
+        console.log(result,'resultresultresultresult');
           res.status(201).json({ status: true, reports: result, message: 'get all reports' })
       })
   } catch (error) {
 
   }
 }
+
 
 
 export const removePost = async (req, res) => {

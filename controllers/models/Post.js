@@ -28,6 +28,7 @@ const postSchema = mongoose.Schema(
     comments: {
       type: Array,
       default: [],
+      
     },
     reports:{
       type: Array,

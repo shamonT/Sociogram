@@ -22,6 +22,7 @@ import Report from "components/Report";
 
 import UserreporterList from "scenes/adminPage/Userreporterlist";
 import OtpFormm from "scenes/loginPage/OtpFormm";
+import ResetPass from "scenes/setPassword/ResetPass";
 //import { StarRateRounded } from "@mui/icons-material";
 
 function App() {
@@ -57,6 +58,7 @@ function App() {
               element={isAuth ? <Chat/> : <Navigate to="/" />}
              
             />   
+               <Route path="/reset-password" element= {<ResetPass />} />
             <Route path='/report-post' element={<Report/>}/>     
           </Routes>
         </ThemeProvider>

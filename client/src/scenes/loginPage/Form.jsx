@@ -16,7 +16,7 @@ import { setLogin } from "../../state/index";
 import Dropzone from "react-dropzone";
 import FlexBetween from "components/FlexBetween";
 import OtpFormm from "./OtpFormm";
-import { sendOtp, userLogin } from "api/AuthRequest";
+import { sendOtp } from "api/AuthRequest";
 
 const registerSchema = yup.object().shape({
   firstName: yup.string().required("required"),
@@ -87,7 +87,7 @@ const Form = () => {
     setUserDetails(formData);
     console.log(formData, "jjjjjjjjj");
 
-    const response = await sendOtp(formData);
+    const response = await sendOtp(values.email);
     console.log(response, "essebdjbvcmjc,");
     // const response = await savedUserResponse.json();
     // onSubmitProps.resetForm();
@@ -103,14 +103,16 @@ const Form = () => {
       }
     }
   };
-
+                
   const login = async (values, onSubmitProps) => {
     const loggedInResponse = await fetch("http://localhost:3001/auth/login", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(values),
     });
+    console.log(loggedInResponse,'loggedInResponse');
     const loggedIn = await loggedInResponse.json();
+    console.log(loggedIn,'loggedInloggedIn')
     onSubmitProps.resetForm();
     if (loggedIn) {
       dispatch(
@@ -119,7 +121,7 @@ const Form = () => {
           token: loggedIn.token,
         })
       );
-      // navigate("/home");
+      navigate("/home");
     }
   };
 
@@ -309,6 +311,9 @@ const Form = () => {
                     {isLogin
                       ? "Don't have an account? Sign Up here."
                       : "Already have an account? Login here."}
+                  </Typography>
+                  <Typography onclick={()=>{}}>
+                    {isLogin?"Forgot your password":""}
                   </Typography>
                 </Box>
               </form>

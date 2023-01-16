@@ -15,7 +15,8 @@ import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { setLogin } from "state";
 import { Button, Form, Input, Upload } from "antd";
-
+import TextsmsIcon from '@mui/icons-material/Textsms';
+import { createUserChat } from "api/AuthRequest";
 const UserWidget = ({ userId, picturePath }) => {
   const [user, setUser] = useState(null);
   const { palette } = useTheme();
@@ -100,6 +101,21 @@ const UserWidget = ({ userId, picturePath }) => {
     return null;
   }
 
+   //Create Chat
+   const createChat = async () => {
+    const senderId = currUserId._id
+    const receiverId = userId
+
+    const response = await createUserChat({ senderId, receiverId })
+
+    console.log(response.data, 'packkk');
+
+    if (response.data) {
+      navigate("../chat")
+    }
+
+
+  }
   const {
     firstName,
     lastName,
@@ -159,9 +175,14 @@ const UserWidget = ({ userId, picturePath }) => {
         </Box>
         {isCurrUser ?
           <Box display="flex" alignItems="center" gap="1rem">
-            <CreateIcon fontSize="large" sx={{ color: main }} />
-            <ButtonBase onClick={handleOpen} > <Typography color={medium}>Edit Profile</Typography></ButtonBase>
-          </Box> : null}
+          <CreateIcon fontSize="large" sx={{ color: main }} />
+          <ButtonBase onClick={handleOpen} > <Typography color={medium}>Edit Profile</Typography></ButtonBase>
+        </Box> : <Box display="flex" alignItems="center" gap="1rem">
+          <TextsmsIcon fontSize="large" sx={{ cursor: "pointer" }}
+            onClick={() => { createChat() }} >Message</TextsmsIcon>
+
+          <Typography color={medium}>Message</Typography>
+        </Box>}
       </Box>
 
 

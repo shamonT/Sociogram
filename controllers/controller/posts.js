@@ -38,8 +38,6 @@ export const getFeedPosts = async (req, res) => {
   // const DEFAULT_LIMIT=3;
   // const { start, limit } = req.query;
   
-
-
   try {
     const post = await Post.find()
     res.status(200).json(post.sort((a,b)=>{
@@ -107,11 +105,12 @@ export const likePost = async (req, res) => {
 // }
 export const commentPost = async (req, res) => {
   try {
-
+console.log(req.body.time);
       const postId = req.body.postId
       const comments = {
           username: req.body.userName,
-          comment: req.body.comment
+          comment: req.body.comment,
+          time:req.body.time
       }
 
       await Post.updateOne({ _id: postId }, {

@@ -1,5 +1,5 @@
 import express from "express";
-import { protect } from "../controllers/middleware/auth.js";
+import { protect, verifyToken } from "../controllers/middleware/auth.js";
 const router = express.Router();
 import {blockUser, getAllReports, getUser, loginAdmin,registerAdmin, removePost, unblockUser } from "../controllers/controller/adminController.js";
 

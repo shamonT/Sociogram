@@ -39,7 +39,7 @@ const Reporterlist = () => {
         if(Reports?.status===201){
           console.log(Reports.data.reports,'jhgfydfgku');
           setUser( Reports.data.reports)
-          // console.log(Reports.data.reports._id);
+           console.log(Reports.data.reports);
         }else{
           // alert('error')
         }
@@ -59,7 +59,7 @@ const Reporterlist = () => {
                        
                         <th>PostId</th>
                         <th>ReportCount</th>
-                       
+                       <th>reportreaso</th>
                         
                         <th>Action</th>
                     </tr>
@@ -67,20 +67,18 @@ const Reporterlist = () => {
                 <tbody style={{textAlign:'center'}}>
 
                    {user? user.map((reports,index) => {
-                  
+                  console.log(reports.r,'reportsresult');
                       return (
                         
                             <tr >
                               
                                 <td>{reports._id}</td>
                                 <td>{reports.reports.length}</td>
+                                <td>{reports.reports[index]?.reason}</td>
                                 <td>{ <button onClick={()=>handleDelete(reports._id)}>Delete</button>}</td>
                                
                                  <td>{}</td> 
-                                {/* <td>{obj.Active
-                                  ? <Button variant="danger" onClick={() => { if (window.confirm('Do you want to block this user?')) { blockUser(obj._id) } }} >Block</Button>
-                                  : <Button variant="warning" onClick={() => { if (window.confirm('Do you want to unblock this user?')) { unblockUser(obj._id) } }} >Unblock</Button>}
-                                </td>  */}
+                                
 
                             </tr>
                       )

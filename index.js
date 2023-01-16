@@ -11,12 +11,12 @@ import { fileURLToPath } from "url";
 import authRoutes from "./routes/auth.js";
 import userRoutes from "./routes/users.js";
 import postRoutes from "./routes/posts.js";
- import adminRoutes from "./routes/adminRoutes.js"
+import adminRoutes from "./routes/adminRoutes.js";
 import { register, sendOtp } from "./controllers/controller/auth.js";
 import { createPost } from "./controllers/controller/posts.js";
 import { verifyToken } from "./controllers/middleware/auth.js";
-import ChatRoute from "./routes/ChatRoute.js"
-import MessageRoute from "./routes/MessageRoute.js"
+import ChatRoute from "./routes/ChatRoute.js";
+import MessageRoute from "./routes/MessageRoute.js";
 //dummy
 
 // import User from "./controllers/models/User.js";
@@ -51,12 +51,23 @@ const storage = multer.diskStorage({
     cb(null, file.originalname);
   },
 });
-const upload = multer({ storage });
+const upload = multer({
+  storage: storage,
+  fileFilter: (req, file, cb) => {
+    if (
+      file.mimetype === "image/gif" ||
+      file.mimetype.startsWith("image/" || file.mimetype.startsWith("video/"))
+    ) {
+      cb(null, true);
+    } else {
+      cb(new Error("Unsupported file type!"), false);
+    }
+  },
+});
 
 //routes with files//
 app.post("/auth/register", upload.single("picture"), register);
-app.post("/send-otp", upload.single("picture"), sendOtp)
-
+app.post("/send-otp", sendOtp);
 
 app.post("/posts", verifyToken, upload.single("picture"), createPost);
 
@@ -65,12 +76,23 @@ app.use("/auth", authRoutes);
 app.use("/users", userRoutes);
 
 app.use("/posts", postRoutes);
-app.use("/admin",adminRoutes);
-app.use("/chat",ChatRoute)
-app.use("/message",MessageRoute)
+app.use("/admin", adminRoutes);
+app.use("/chat", ChatRoute);
+app.use("/message", MessageRoute);
 
 // app.use("/admin",adminRoutes);
 //mongooose
+
+app.use(function (err, req, res, next) {
+  const statusCode = res.statusCode ? res.statusCode : 500;
+
+  res.status(statusCode);
+
+  res.json({
+    message: err.message,
+    stack: process.env.NODE_ENV === "production" ? "null" : err.stack,
+  });
+});
 
 const PORT = process.env.port || 6001;
 mongoose

@@ -28,6 +28,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { setPost } from "state";
+import { format } from "timeago.js";
 // import { MoreVertOutlinedIcon } from "@mui/icons-material";
 // import { Menu } from "@mui/icons-material";
 const PostWidget = ({
@@ -45,6 +46,7 @@ const PostWidget = ({
   const [isComments, setIsComments] = useState(false);
   const user = useSelector((state) => state.auth.user);
   const [comment, setComment] = useState("");
+  const [time, setTime] = useState('')
   const dispatch = useDispatch();
   const token = useSelector((state) => state.auth.token);
   const loggedInUserId = useSelector((state) => state?.auth?.user?._id);
@@ -123,11 +125,17 @@ const PostWidget = ({
   // }
   const patchComment = async () => {
     const userName = user.firstName + " " + user.lastName;
-    const response = await axios.patch(`http://localhost:3001/posts/comment-post`, {
+    let response;
+    if(comment){
+      response = await axios.patch(`http://localhost:3001/posts/comment-post`, {
       comment,
       userName,
       postId,
+      time:Date()
     });
+    }else{
+      toast.error("No comment found.")
+    }
     if (response) {
       dispatch(setPost({ post: response.data.newCommentPost }));
     }
@@ -228,14 +236,15 @@ const PostWidget = ({
       </FlexBetween>
       {isComments && (
             <Box mt="0.5rem">
-              {comments.map((comment, i) => (
+              {comments?.map((comment, i) => (
                 <Box key={`${name}-${i}`}>
                   <Divider />
                   <Accordion collapse={true}>
                   <Typography sx={{ color: main,m: "0.5rem 0", pl: "1rem" }}>
-                    {comment.username}:  {comment.comment}
-                  </Typography>
+                    {comment.username}:  {comment.comment}:
+                  <span>{format(comment.time)}</span>
 
+                  </Typography>
                   <Typography sx={{ color: main, m: "0.5rem 0", pl: "1rem" }}>
                   
                   </Typography>
